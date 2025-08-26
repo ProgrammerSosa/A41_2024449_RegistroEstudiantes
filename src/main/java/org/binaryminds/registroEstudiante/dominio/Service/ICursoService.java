@@ -11,3 +11,4 @@ public interface ICursoService {
     void guardarCurso(Curso cuso);
     void eliminarCurso(Curso curso);
 }
+

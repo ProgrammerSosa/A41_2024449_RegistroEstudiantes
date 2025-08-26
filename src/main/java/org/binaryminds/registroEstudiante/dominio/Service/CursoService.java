@@ -3,9 +3,10 @@ package org.binaryminds.registroEstudiante.dominio.Service;
 import org.binaryminds.registroEstudiante.persistence.crud.CursoCrud;
 import org.binaryminds.registroEstudiante.persistence.entity.Curso;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class CursoService implements ICursoService{
     @Autowired
     private CursoCrud crud;
@@ -17,8 +18,8 @@ public class CursoService implements ICursoService{
     }
 
     @Override
-    public Curso buscarCursoPorId(Integer codigoCurso) {
-        Curso cursos = crud.findById(codigoCurso).orElse(null);
+    public Curso buscarCursoPorId(Integer codigo_curso) {
+        Curso cursos = crud.findById(codigo_curso).orElse(null);
         return cursos;
     }
 
