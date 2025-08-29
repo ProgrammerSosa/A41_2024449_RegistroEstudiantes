@@ -1,8 +1,9 @@
 package org.binaryminds.registroEstudiante;
 
-
 import org.binaryminds.registroEstudiante.dominio.Service.ICursoService;
+import org.binaryminds.registroEstudiante.dominio.Service.IEstudianteService;
 import org.binaryminds.registroEstudiante.persistence.entity.Curso;
+import org.binaryminds.registroEstudiante.persistence.entity.Estudiante;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,14 @@ import java.util.List;
 import java.util.Scanner;
 
 import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
-@SpringBootApplication
+//@SpringBootApplication
 public class RegistroEstudianteApplication  implements CommandLineRunner {
 
 @Autowired
 private ICursoService cursoService;
+
+@Autowired
+private IEstudianteService estudianteService;
 
 private static final Logger logger = LoggerFactory.getLogger(RegistroEstudianteApplication.class);
 
@@ -54,7 +58,12 @@ String sl = System.lineSeparator();
              3. Agregar nuevo curso.
              4. Modificar curso.
              5. Eliminar curso.
-             6. Salir.
+             6. Listar todos los estudiantes.
+             7. Buscar curso por estudiante.
+             8. Agregar nuevo estudiante.
+             9. Modificar estudiante.
+             10. Eliminar estudiante.
+             11. Salir.
              Elije una opción: \s""");
         var opcion = Integer.parseInt(consola.nextLine());
         return opcion;
@@ -124,6 +133,79 @@ String sl = System.lineSeparator();
                 }
             }
             case 6 -> {
+                logger.info("***Listado de todos los estudiantes***"+sl);
+                List<Estudiante> estudiantes = estudianteService.listarEstudiantes();
+                estudiantes.forEach(estudiante -> logger.info(estudiante.toString()+sl));
+            }
+            case 7 -> {
+                logger.info(sl+"***Buscar Curso por su estudiantes***"+sl);
+                logger.info("Ingrese el id: ");
+                var codigo = Integer.parseInt(consola.nextLine());
+                Estudiante estudiante = estudianteService.buscarEstudiantePorId(codigo);
+                if (estudiante != null){
+                    logger.info("estudiantes encontrado: "+sl +estudiante +sl);
+                }else {
+                    logger.info("estudiantes NO encontrado: "+sl +estudiante +sl);
+                }
+            }
+            case 8 -> {
+                logger.info(sl+"***Agregar nuevo estudiantes***"+sl);
+                logger.info("Ingrese el nombre del estuidante: ");
+                var nombre = consola.nextLine();
+                logger.info("Ingrese el apellido: ");
+                var apellido = consola.nextLine();
+                logger.info("Ingrese el correo: ");
+                var correo = consola.nextLine();
+                logger.info("Ingrese el Curso: ");
+                var codigo_curso = consola.nextLine();
+                var estudiante = new Estudiante();
+                estudiante.setCodigo_curso(Integer.valueOf(codigo_curso));
+                estudiante.setNombre(nombre);
+                estudiante.setApellido(apellido);
+                estudiante.setCorreo(correo);
+                estudianteService.guardarEstudiante(estudiante);
+                logger.info("estudiantes agregado: "+sl +estudiante +sl);
+            }
+            case 9 -> {
+                logger.info("***Modificar estudiantes***"+sl);
+                logger.info("Ingrese el codigo del estudiantes a editar: ");
+                var codigo = Integer.parseInt(consola.nextLine());
+                var estudiante = estudianteService.buscarEstudiantePorId(codigo);
+                logger.info("estudiantes encontrado: "+sl +estudiante +sl);
+                if (estudiante != null){
+                    logger.info("Ingrese el nombre: ");
+                    var nombre = consola.nextLine();
+                    logger.info("Ingrese el apellido: ");
+                    var apellido = consola.nextLine();
+                    logger.info("Ingrese el correo: ");
+                    var correo = consola.nextLine();
+                    logger.info("Ingrese el Curso: ");
+                    var codigo_curso = consola.nextLine();
+                    estudiante.setCodigo_curso(Integer.valueOf(codigo_curso));
+                    estudiante.setNombre(nombre);
+                    estudiante.setApellido(apellido);
+                    estudiante.setCorreo(correo);
+                    estudianteService.guardarEstudiante(estudiante);
+                    logger.info("curso modificado: "+sl +estudiante +sl);
+                }else {
+                    logger.info("curso NO encontrado "+sl +estudiante +sl);
+                }
+            }
+            case 10 -> {
+                logger.info(sl+"***Eliminar estudiantes***"+sl);
+                logger.info("Ingrese el codigo del estudiantes a eliminar: ");
+                var codigo = Integer.parseInt(consola.nextLine());
+                var estudiante = estudianteService.buscarEstudiantePorId(codigo);
+                if (estudiante != null) {
+                    estudianteService.eliminarEstudiante(estudiante);
+                    logger.info("estudiantes eliminado: "+sl +estudiante +sl);
+                }else {
+                    logger.info("estudiantes NO encontrado "+sl +estudiante +sl);
+                }
+            }
+
+
+            case 11 -> {
                 logger.info("Hasta pronto. vaquero!"+sl+sl);
                 salir = true;
             }
